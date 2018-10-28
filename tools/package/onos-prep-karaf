@@ -24,7 +24,7 @@ tar xf $KARAF_TAR
 # rename path name to match what was distributed with vicci
 mv "$(ls -d apache*)" "apache-karaf-$KARAF_VERSION" || true
 
-tar xf $KARAF_PATCHES
+tar xf $KARAF_PATCHES --no-same-owner
 
 # Unroll the Apache Karaf bits, prune them and make ONOS top-level directories.
 KARAF_DIR=$(ls -d apache*)

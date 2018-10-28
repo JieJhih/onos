@@ -1,0 +1,27 @@
+workspace:
+  base: /go/src
+  path: github.com/jiejhih/onos
+
+clone:
+  git:
+    image: plugins/git
+    depth: 50
+    tags: true
+
+pipeline:
+  build_test:
+    image: jiejhih/vomci-test:v1
+    environment:
+      - ONOS_ROOT=/go/src/github.com/jiejhih/onos
+    pull: true
+    privileged: true
+    network_mode: host
+    commands:
+      - bazel query 'tests(//...)' | SHLVL=1 xargs bazel test --test_summary=detailed --test_output=errors --test_timeout=300 --jobs 4
+      - bazel build onos
+
+  line:
+    image: appleboy/drone-line
+    secrets: [ line_channel_secret, line_channel_token, line_to, line_to_room ]
+    when:
+      status: [ changed, failure ]
